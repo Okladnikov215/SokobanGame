@@ -57,11 +57,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Box.cs" />
-    <Compile Include="Direction.cs" />
+    <Compile Include="GameAssets\Box.cs" />
+    <Compile Include="GameAssets\Direction.cs" />
+    <Compile Include="GameAssets\Wall.cs" />
     <Compile Include="SokobanGame.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="GameAssets\Map.cs" />
+    <Compile Include="GameAssets\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="States\GameState.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="States\MenuState.cs" />
     <Compile Include="States\OptionsState.cs" />
     <Compile Include="States\State.cs" />
-    <Compile Include="Tile.cs" />
+    <Compile Include="GameAssets\Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

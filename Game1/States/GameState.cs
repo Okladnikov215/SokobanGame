@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SokobanGame.GameAssets;
 
 namespace SokobanGame.States
 {
@@ -38,6 +39,8 @@ namespace SokobanGame.States
             Player.Texture = this.content.Load<Texture2D>("Player");
             Tile.DefaultTexture = this.content.Load<Texture2D>("Floor");
             Tile.DefaultEndTexture = this.content.Load<Texture2D>("EndFloor");
+            Wall.DefaultTexture = this.content.Load<Texture2D>("Wall");
+            
         }
 
         private List<char[,]> LoadLevels()
@@ -72,8 +75,10 @@ namespace SokobanGame.States
 
             currentKeyboardState = Keyboard.GetState();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (currentKeyboardState.IsKeyUp(Keys.Escape) && previousKeyboardState.IsKeyDown(Keys.Escape))
+            {
                 game.ChangeState(new MenuState(game, graphicsDevice, content));
+            }
 
             UpdatePlayer(gameTime);
 

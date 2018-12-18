@@ -86,6 +86,9 @@ namespace SokobanGame.States
                         }
                 }
 
+            if (currentKeyboardState.IsKeyUp(Keys.Escape) && lastKeyDown == Keys.Escape)
+                game.Exit();
+
             if (currentKeyboardState.IsKeyUp(Keys.Up) && lastKeyDown == Keys.Up)
             {
                 SelectedMenuPoint = SelectedMenuPoint - 1;

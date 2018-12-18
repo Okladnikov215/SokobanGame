@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using SokobanGame.GameAssets;
 
 namespace SokobanGame
 {
@@ -31,6 +32,11 @@ namespace SokobanGame
                         var newBox = new Box(new Vector2(i, j));
                         Boxes.Add(newBox);
                         Tiles[i, j].BoxOnATile = newBox;
+                    }
+
+                    if (levelMap[i,j] == 'w')
+                    {
+                        Tiles[i, j] = new Wall();
                     }
 
                     if (levelMap[i, j] == 'f')
