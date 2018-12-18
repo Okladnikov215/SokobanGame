@@ -31,17 +31,24 @@ namespace SokobanGame.States
         /// </summary>
         public void LoadContent()
         {
+            levels = LoadLevels();
+            levelMap = new Map(levels[currentLevel]);
+
+            Box.DefaultTexture = this.content.Load<Texture2D>("box");
+            Player.Texture = this.content.Load<Texture2D>("Player");
+            Tile.DefaultTexture = this.content.Load<Texture2D>("Floor");
+            Tile.DefaultEndTexture = this.content.Load<Texture2D>("EndFloor");
+        }
+
+        private List<char[,]> LoadLevels()
+        {
+            var levels = new List<char[,]>();
             var charMap = new char[3, 3] { { 'e', 'e', 'e' }, { 'p', 'b', 'f' }, { 'e', 'b', 'f' } };
             levels.Add(charMap);
             charMap = new char[2, 2] { { 'p', 'f' }, { 'f', 'b' } };
             levels.Add(charMap);
 
-            levelMap = new Map(levels[currentLevel]);
-            // levels = LoadLevels();
-            Box.DefaultTexture = this.content.Load<Texture2D>("box");
-            Player.Texture = this.content.Load<Texture2D>("Player");
-            Tile.DefaultTexture = this.content.Load<Texture2D>("Floor");
-            Tile.DefaultEndTexture = this.content.Load<Texture2D>("EndFloor");
+            return levels;
         }
 
 
@@ -64,6 +71,9 @@ namespace SokobanGame.States
             previousKeyboardState = currentKeyboardState;
 
             currentKeyboardState = Keyboard.GetState();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                game.ChangeState(new MenuState(game, graphicsDevice, content));
 
             UpdatePlayer(gameTime);
 

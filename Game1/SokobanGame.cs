@@ -33,7 +33,7 @@ namespace SokobanGame
         protected override void Initialize()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            currentState = new GameState(this, graphics.GraphicsDevice, Content);
+            currentState = new MenuState(this, graphics.GraphicsDevice, Content);
             base.Initialize();
         }
 
@@ -61,9 +61,6 @@ namespace SokobanGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                ChangeState(new MenuState(this, graphics.GraphicsDevice, Content));                   
-
             if (nextState!=null)
             {
                 currentState = nextState;
