@@ -46,8 +46,8 @@ namespace SokobanGame.States
             int menuSize = menuPoints.Count;
             for (int i = 0; i < menuSize; i++)
             {
-                var menuPoint = menuPoints[i];
-                spriteBatch.DrawString(menuFont, menuPoint, new Vector2(100, i * 100 + 100), Color.Black);
+                var menuPointText = menuPoints[i];
+                spriteBatch.DrawString(menuFont, menuPointText, new Vector2(100, i * 100 + 100), Color.Black);
             }
             spriteBatch.Draw(menuSelector, new Vector2(50, 100 * (SelectedMenuPoint + 1)), Color.White);
         }
