@@ -20,7 +20,7 @@ namespace SokobanGame.States
             set
             {
                 if (value == -1)
-                    selectedMenuPoint = menuPoints.Count - 1;
+                    selectedMenuPoint = 2;
                 else selectedMenuPoint = value % menuPoints.Count;
             }
         }
@@ -36,10 +36,10 @@ namespace SokobanGame.States
             menuPoints.Add("Start Game");
             menuPoints.Add("Options");
             menuPoints.Add("Exit");
-            selectedMenuPoint = 0;
+            SelectedMenuPoint = 0;
         }
 
-        
+
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -49,7 +49,7 @@ namespace SokobanGame.States
                 var menuPoint = menuPoints[i];
                 spriteBatch.DrawString(menuFont, menuPoint, new Vector2(100, i * 100 + 100), Color.Black);
             }
-            spriteBatch.Draw(menuSelector, new Vector2(50, 100 * (selectedMenuPoint + 1)), Color.White);
+            spriteBatch.Draw(menuSelector, new Vector2(50, 100 * (SelectedMenuPoint + 1)), Color.White);
         }
 
         public override void PostUpdate(GameTime gameTime)
@@ -67,7 +67,7 @@ namespace SokobanGame.States
             }
 
             if (currentKeyboardState.IsKeyUp(Keys.Enter) && lastKeyDown == Keys.Enter)
-                switch (selectedMenuPoint)
+                switch (SelectedMenuPoint)
                 {
                     case 0:
                         {
@@ -88,12 +88,14 @@ namespace SokobanGame.States
 
             if (currentKeyboardState.IsKeyUp(Keys.Up) && lastKeyDown == Keys.Up)
             {
-                selectedMenuPoint = selectedMenuPoint--;
+                SelectedMenuPoint = SelectedMenuPoint - 1;
+                lastKeyDown = Keys.None;
             }
 
             if (currentKeyboardState.IsKeyUp(Keys.Down) && lastKeyDown == Keys.Down)
             {
-                selectedMenuPoint = selectedMenuPoint++;
+                SelectedMenuPoint = SelectedMenuPoint + 1;
+                lastKeyDown = Keys.None;
             }
         }
     }
