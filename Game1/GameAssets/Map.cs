@@ -34,9 +34,10 @@ namespace SokobanGame
                         Tiles[i, j].BoxOnATile = newBox;
                     }
 
-                    if (levelMap[i,j] == 'w')
+                    if (levelMap[i, j] == 'w' || levelMap[i, j] == ' ')
                     {
                         Tiles[i, j] = new Wall();
+                        Tiles[i, j].Texture = Wall.DefaultTexture;
                     }
 
                     if (levelMap[i, j] == 'f')
@@ -54,13 +55,14 @@ namespace SokobanGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            DrawOuterWall(spriteBatch);
             for (int i = 0; i < Width; i++)
                 for (int j = 0; j < Height; j++)
                 {
                     var currentTile = Tiles[i, j];
                     var destinationRectangle = new Rectangle(i * tileSize, j * tileSize, tileSize, tileSize);
                     var isEndTile = currentTile.IsEndTile;
-                    var currentTileTexture = (isEndTile) ? Tile.DefaultEndTexture : Tile.DefaultTexture;
+                    var currentTileTexture = (isEndTile) ? Tile.DefaultEndTexture : currentTile.Texture;
                     spriteBatch.Draw(currentTileTexture, destinationRectangle, Color.White);
 
                     if (currentTile.BoxOnATile != null)
@@ -69,6 +71,23 @@ namespace SokobanGame
                         spriteBatch.Draw(Box.DefaultTexture, destinationRectangle, tintColor);
                     }
                 }
+        }
+
+        private void DrawOuterWall(SpriteBatch spriteBatch)
+        {
+            var tintColor = Color.MediumVioletRed;
+            var texture = Wall.DefaultTexture;
+            for (int i = -1; i <= Width; i += 1)
+            {
+                var destinationRectangle = new Rectangle(i * tileSize, Width * tileSize, tileSize, tileSize);
+                spriteBatch.Draw(texture, destinationRectangle, tintColor);
+            }
+
+            for (int j = -1; j <= Height; j += 1)
+            {
+                var destinationRectangle = new Rectangle(Width * tileSize, j * tileSize, tileSize, tileSize);
+                spriteBatch.Draw(texture, destinationRectangle, tintColor);
+            }
         }
 
         public Tile this[Vector2 position]

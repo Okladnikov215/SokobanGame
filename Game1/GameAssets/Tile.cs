@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using SokobanGame.GameAssets;
 namespace SokobanGame
 {
     public class Tile
@@ -15,7 +15,7 @@ namespace SokobanGame
         {
             get
             {
-                return BoxOnATile==null;
+                return (BoxOnATile == null && !(this is Wall));
             }
         }
 

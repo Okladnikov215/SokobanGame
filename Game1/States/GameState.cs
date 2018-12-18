@@ -32,15 +32,14 @@ namespace SokobanGame.States
         /// </summary>
         public void LoadContent()
         {
-            levels = LoadLevels();
-            levelMap = new Map(levels[currentLevel]);
-
             Box.DefaultTexture = this.content.Load<Texture2D>("box");
             Player.Texture = this.content.Load<Texture2D>("Player");
             Tile.DefaultTexture = this.content.Load<Texture2D>("Floor");
             Tile.DefaultEndTexture = this.content.Load<Texture2D>("EndFloor");
             Wall.DefaultTexture = this.content.Load<Texture2D>("Wall");
-            
+
+            levels = LoadLevels();
+            levelMap = new Map(levels[currentLevel]);            
         }
 
         private List<char[,]> LoadLevels()
@@ -48,7 +47,7 @@ namespace SokobanGame.States
             var levels = new List<char[,]>();
             var charMap = new char[3, 3] { { 'e', 'e', 'e' }, { 'p', 'b', 'f' }, { 'e', 'b', 'f' } };
             levels.Add(charMap);
-            charMap = new char[2, 2] { { 'p', 'f' }, { 'f', 'b' } };
+            charMap = new char[2, 2] { { 'p', 'w' }, { 'f', 'b' } };
             levels.Add(charMap);
 
             return levels;

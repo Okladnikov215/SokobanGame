@@ -10,5 +10,11 @@ namespace SokobanGame.GameAssets
     public class Wall : Tile
     {
         new public static Texture2D DefaultTexture;
+        new public Texture2D Texture {get; set;}
+
+        public Wall()
+        {
+            Texture = DefaultTexture;
+        }
     }
 }
