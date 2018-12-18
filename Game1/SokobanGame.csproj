@@ -69,6 +69,7 @@
     <Compile Include="States\LevelSelectState.cs" />
     <Compile Include="States\MenuState.cs" />
     <Compile Include="States\OptionsState.cs" />
+    <Compile Include="States\State.cs" />
     <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>
