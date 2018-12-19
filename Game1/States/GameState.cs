@@ -21,6 +21,7 @@ namespace SokobanGame.States
 
         public GameState(SokobanGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
+            new OptionsState(game, graphicsDevice, content).GetSettingsFromFile("Settings.ini");
             currentLevel = 0;
             levels = new List<char[,]>();
             LoadContent();
@@ -39,7 +40,7 @@ namespace SokobanGame.States
             Wall.DefaultTexture = this.content.Load<Texture2D>("Wall");
 
             levels = LoadLevels();
-            levelMap = new Map(levels[currentLevel]);            
+            levelMap = new Map(levels[currentLevel]);
         }
 
         private List<char[,]> LoadLevels()

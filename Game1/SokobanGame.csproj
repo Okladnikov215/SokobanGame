@@ -60,6 +60,7 @@
     <Compile Include="GameAssets\Box.cs" />
     <Compile Include="GameAssets\Direction.cs" />
     <Compile Include="GameAssets\Wall.cs" />
+    <Compile Include="GameSettings.cs" />
     <Compile Include="SokobanGame.cs" />
     <Compile Include="GameAssets\Map.cs" />
     <Compile Include="GameAssets\Player.cs" />

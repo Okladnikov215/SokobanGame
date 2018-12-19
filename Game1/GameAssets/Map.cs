@@ -13,10 +13,11 @@ namespace SokobanGame
         public List<Box> Boxes;
         public int Height;
         public int Width;
-        public static int tileSize = 100;
+        public int tileSize;
 
         public Map(char[,] levelMap)
         {
+            tileSize = int.Parse(GameSettings.TileSize);
             Boxes = new List<Box>();
             Width = levelMap.GetLength(0);
             Height = levelMap.GetLength(1);

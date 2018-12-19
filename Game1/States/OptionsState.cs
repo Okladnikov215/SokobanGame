@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -10,9 +13,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SokobanGame.States
 {
-    class OptionsState : State
+    public class OptionsState : State
     {
-        private List<string> optionPoints;
+        private Dictionary<int, string> optionPoints;
         private int selectedOptionPoint;
         public int SelectedOptionPoint
         {
@@ -20,7 +23,7 @@ namespace SokobanGame.States
             set
             {
                 if (value == -1)
-                    selectedOptionPoint = 2;
+                    selectedOptionPoint = optionPoints.Count - 1;
                 else selectedOptionPoint = value % optionPoints.Count;
             }
         }
@@ -30,11 +33,51 @@ namespace SokobanGame.States
 
         public OptionsState(SokobanGame game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
-            optionPoints = new List<string>();
+            optionPoints = GetSettingsFromFile("Settings.ini");
             optionFont = content.Load<SpriteFont>("MainFont");
             optionSelector = content.Load<Texture2D>("MenuSelector");
-            optionPoints.Add("Tile size:");
-            optionPoints.Add("Return to menu");
+        }
+
+        public Dictionary<int, string> GetSettingsFromFile(string filename)
+        {
+            var dict = new Dictionary<int, string>();
+            int propertyIndex = 0;
+            foreach (PropertyInfo prop in typeof(GameSettings).GetProperties())
+            {
+                dict.Add(propertyIndex, prop.Name);
+                propertyIndex++;
+            }
+
+            if (!File.Exists(filename))
+            {
+                var file = File.Create(filename);
+                file.Close();
+                foreach (PropertyInfo prop in typeof(GameSettings).GetProperties())
+                {
+                    var stringToWrite = string.Format("{0} {1}", prop.Name, prop.GetValue(null, null));
+                    File.AppendAllText(filename, stringToWrite + Environment.NewLine);
+                }
+            }
+
+            var fileLines = File.ReadAllLines(filename);
+
+            Debug.Write(GameSettings.PlayerName);
+            Debug.Write(GameSettings.TileSize);
+
+            for (int i=0; i< fileLines.Length; i++)
+            foreach (var valueName in dict.Values)
+            {
+               if (valueName == fileLines[i].Split(' ')[0])
+                    {
+                       var prop = typeof(GameSettings).GetProperty(valueName);
+                       prop.SetValue(null, fileLines[i].Split(' ')[1]);
+                    }
+            }
+
+            Debug.Write(GameSettings.PlayerName);
+            Debug.Write(GameSettings.TileSize);
+
+            return dict;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -45,7 +88,8 @@ namespace SokobanGame.States
                 var menuPointText = optionPoints[i];
                 spriteBatch.DrawString(optionFont, menuPointText, new Vector2(100, i * 100 + 100), Color.Black);
             }
-            string correspondingValueText = Map.tileSize.ToString();
+            string correspondingValueText = GameSettings.TileSize.ToString();
+
             spriteBatch.DrawString(optionFont, correspondingValueText, new Vector2(200, 0 * 100 + 100), Color.Black);
             spriteBatch.Draw(optionSelector, new Vector2(50, 100 * (SelectedOptionPoint + 1)), Color.White);
 
@@ -95,13 +139,17 @@ namespace SokobanGame.States
                 lastKeyDown = Keys.None;
             }
 
+            PropertyInfo prop;
+            var propertyName = optionPoints[SelectedOptionPoint];
+            prop = typeof(GameSettings).GetProperty("TileSize");
+            var propValue = prop.GetValue(null, null);
 
             if (currentKeyboardState.IsKeyUp(Keys.Left) && lastKeyDown == Keys.Left)
             {
-                ref int propertyToChange = ref Map.tileSize;
-                if (propertyToChange > 15)
+                if (propValue is int propValueInt)
                 {
-                    propertyToChange -= 5;
+                    propValueInt -= 5;
+                    prop.SetValue(null, propValueInt);
                 }
 
                 lastKeyDown = Keys.None;
@@ -109,11 +157,12 @@ namespace SokobanGame.States
 
             if (currentKeyboardState.IsKeyUp(Keys.Right) && lastKeyDown == Keys.Right)
             {
-                ref int propertyToChange = ref Map.tileSize;
-                if (propertyToChange < 1000)
+                if (propValue is int propValueInt)
                 {
-                    propertyToChange += 5;
+                    propValueInt += 5;
+                    prop.SetValue(null, propValueInt);
                 }
+
                 lastKeyDown = Keys.None;
             }
         }
