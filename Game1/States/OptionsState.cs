@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,9 +19,11 @@ namespace SokobanGame.States
             get => selectedOptionPoint;
             set
             {
-                if (value == -1)
+                selectedOptionPoint = value;
+                if (value == 0)
                     selectedOptionPoint = optionPoints.Count - 1;
-                else selectedOptionPoint = value % optionPoints.Count;
+                if (value == optionPoints.Count)
+                    selectedOptionPoint = 1;
             }
         }
         private Keys lastKeyDown;
@@ -36,18 +35,24 @@ namespace SokobanGame.States
             optionPoints = GetSettingsFromFile("Settings.ini");
             optionFont = content.Load<SpriteFont>("MainFont");
             optionSelector = content.Load<Texture2D>("MenuSelector");
+            optionPoints.Add(optionPoints.Count, "Return To Main Menu");
+            selectedOptionPoint = 1;
         }
 
+        // need to split on 3 methods
         public Dictionary<int, string> GetSettingsFromFile(string filename)
         {
+            //block of number - corresponding property name
             var dict = new Dictionary<int, string>();
-            int propertyIndex = 0;
+            dict.Add(dict.Count, "TO CHANGE VALUES - CHANGE \"Settings.ini\" FILE");            
+            int propertyIndex = dict.Count;
             foreach (PropertyInfo prop in typeof(GameSettings).GetProperties())
             {
                 dict.Add(propertyIndex, prop.Name);
                 propertyIndex++;
             }
 
+            //If no file - create new one with default values
             if (!File.Exists(filename))
             {
                 var file = File.Create(filename);
@@ -59,38 +64,40 @@ namespace SokobanGame.States
                 }
             }
 
+            //Change all GameSettings fields which are mentioned in Settings.ini
             var fileLines = File.ReadAllLines(filename);
 
-            Debug.Write(GameSettings.PlayerName);
-            Debug.Write(GameSettings.TileSize);
-
-            for (int i=0; i< fileLines.Length; i++)
-            foreach (var valueName in dict.Values)
-            {
-               if (valueName == fileLines[i].Split(' ')[0])
+            for (int i = 0; i < fileLines.Length; i++)
+                foreach (var valueName in dict.Values)
+                {
+                    if (valueName == fileLines[i].Split(' ')[0])
                     {
-                       var prop = typeof(GameSettings).GetProperty(valueName);
-                       prop.SetValue(null, fileLines[i].Split(' ')[1]);
+                        var prop = typeof(GameSettings).GetProperty(valueName);
+                        prop.SetValue(null, fileLines[i].Split(' ')[1]);
                     }
-            }
-
-            Debug.Write(GameSettings.PlayerName);
-            Debug.Write(GameSettings.TileSize);
-
+                }
             return dict;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            int menuSize = optionPoints.Count;
-            for (int i = 0; i < menuSize; i++)
-            {
-                var menuPointText = optionPoints[i];
-                spriteBatch.DrawString(optionFont, menuPointText, new Vector2(100, i * 100 + 100), Color.Black);
-            }
-            string correspondingValueText = GameSettings.TileSize.ToString();
+            var menuPointText = optionPoints[0];
+            spriteBatch.DrawString(optionFont, menuPointText, new Vector2(100, 100), Color.Red);
 
-            spriteBatch.DrawString(optionFont, correspondingValueText, new Vector2(200, 0 * 100 + 100), Color.Black);
+            int menuSize = optionPoints.Count;
+            for (int i = 1; i < menuSize-1; i++)
+            {
+                menuPointText = optionPoints[i];
+                spriteBatch.DrawString(optionFont, menuPointText, new Vector2(100, i * 100 + 100), Color.Black);
+
+                var prop = typeof(GameSettings).GetProperty(menuPointText);
+                string correspondingValueText = (string)prop.GetValue(null,null);
+                spriteBatch.DrawString(optionFont, correspondingValueText, new Vector2(300, i * 100 + 100), Color.Black);
+            }
+
+            menuPointText = optionPoints[optionPoints.Count-1];
+            spriteBatch.DrawString(optionFont, menuPointText, new Vector2(100, (optionPoints.Count - 1) * 100 + 100), Color.Black);
+
             spriteBatch.Draw(optionSelector, new Vector2(50, 100 * (SelectedOptionPoint + 1)), Color.White);
 
         }
@@ -110,18 +117,9 @@ namespace SokobanGame.States
             }
 
             if (currentKeyboardState.IsKeyUp(Keys.Enter) && lastKeyDown == Keys.Enter)
-                switch (SelectedOptionPoint)
+                if (selectedOptionPoint == optionPoints.Count - 1)
                 {
-                    case 0:
-                        {
-                            TryChangeOptionValue(gameTime, SelectedOptionPoint);
-                            break;
-                        }
-                    case 1:
-                        {
-                            game.ChangeState(new MenuState(game, graphicsDevice, content));
-                            break;
-                        }
+                    game.ChangeState(new MenuState(game, graphicsDevice, content));
                 }
 
             if (currentKeyboardState.IsKeyUp(Keys.Escape) && lastKeyDown == Keys.Escape)
@@ -137,43 +135,6 @@ namespace SokobanGame.States
             {
                 SelectedOptionPoint = SelectedOptionPoint + 1;
                 lastKeyDown = Keys.None;
-            }
-
-            PropertyInfo prop;
-            var propertyName = optionPoints[SelectedOptionPoint];
-            prop = typeof(GameSettings).GetProperty("TileSize");
-            var propValue = prop.GetValue(null, null);
-
-            if (currentKeyboardState.IsKeyUp(Keys.Left) && lastKeyDown == Keys.Left)
-            {
-                if (propValue is int propValueInt)
-                {
-                    propValueInt -= 5;
-                    prop.SetValue(null, propValueInt);
-                }
-
-                lastKeyDown = Keys.None;
-            }
-
-            if (currentKeyboardState.IsKeyUp(Keys.Right) && lastKeyDown == Keys.Right)
-            {
-                if (propValue is int propValueInt)
-                {
-                    propValueInt += 5;
-                    prop.SetValue(null, propValueInt);
-                }
-
-                lastKeyDown = Keys.None;
-            }
-        }
-
-        private void TryChangeOptionValue(GameTime gameTime, int selectedOptionPoint)
-        {
-            var currentKeyboardState = Keyboard.GetState();
-            var pressedKeys = currentKeyboardState.GetPressedKeys();
-            if (pressedKeys.Length != 0)
-            {
-                lastKeyDown = pressedKeys.Last();
             }
         }
     }

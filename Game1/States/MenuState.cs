@@ -34,7 +34,7 @@ namespace SokobanGame.States
             menuSelector = content.Load<Texture2D>("MenuSelector");
             menuPoints = new List<string>();
             menuPoints.Add("Start Game");
-            menuPoints.Add("Options");
+            menuPoints.Add("Look at settings");
             menuPoints.Add("Exit");
             SelectedMenuPoint = 0;
         }
