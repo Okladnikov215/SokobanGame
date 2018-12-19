@@ -71,6 +71,7 @@ namespace SokobanGame.States
                 {
                     case 0:
                         {
+                            gameTime.TotalGameTime = new TimeSpan(0);
                             game.ChangeState(new GameState(game, graphicsDevice, content));
                             break;
                         }

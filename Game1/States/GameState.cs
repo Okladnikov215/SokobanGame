@@ -56,10 +56,6 @@ namespace SokobanGame.States
             {
                 levels.Add(GetLevel(file));
             }
-            //var charMap = new char[3, 3] { { 'e', 'e', 'e' }, { 'p', 'b', 'f' }, { 'e', 'b', 'f' } };
-            //levels.Add(charMap);
-            //charMap = new char[2, 2] { { 'p', 'w' }, { 'f', 'b' } };
-            //levels.Add(charMap);
 
             return levels;
         }
@@ -70,17 +66,17 @@ namespace SokobanGame.States
             var magic = new List<string>();
             while (!fileReadingStream.EndOfStream)
             {
-                magic.Add(fileReadingStream.ReadLine());
+                magic.Add(fileReadingStream.ReadLine().Replace(" ", string.Empty));
             }
 
-            int width = magic[0].Length/2+1;
+            int width = magic[0].Length;
             int height = magic.Count;
 
-            var levelAsCharArray = new char[width, height];
+            var levelAsCharArray = new char[height, width];
             for (int i=0; i<width; i++)
                 for (int j =0; j<height; j++)
                 {
-                    levelAsCharArray[i, j] = magic[i][j];
+                    levelAsCharArray[j, i] = magic[j][i];
                 }
 
             return levelAsCharArray;
@@ -116,11 +112,18 @@ namespace SokobanGame.States
             UpdatePlayer(gameTime);
 
             if (levelMap.CheckVictory())
-                NextLevel(levelMap);
+                NextLevel(levelMap, gameTime);
         }
 
-        private void NextLevel(Map levelMap)
+        private void NextLevel(Map levelMap, GameTime gameTime)
         {
+            if (levels.Count-currentLevel == 1)
+            {
+                var victoryState = new VictoryState(game, graphicsDevice, content);
+                victoryState.FinishTime = gameTime.TotalGameTime;
+                game.ChangeState(victoryState);
+                return;
+            }
             this.levelMap = new Map(levels[++currentLevel]);
         }
 
