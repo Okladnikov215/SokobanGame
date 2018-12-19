@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SokobanGame.GameAssets;
+using System.IO;
+using System.Reflection;
 
 namespace SokobanGame.States
 {
@@ -39,19 +41,50 @@ namespace SokobanGame.States
             Tile.DefaultEndTexture = this.content.Load<Texture2D>("EndFloor");
             Wall.DefaultTexture = this.content.Load<Texture2D>("Wall");
 
-            levels = LoadLevels();
+            levels = LoadLevels("Levels");
             levelMap = new Map(levels[currentLevel]);
         }
 
-        private List<char[,]> LoadLevels()
+        private List<char[,]> LoadLevels(string path)
         {
             var levels = new List<char[,]>();
-            var charMap = new char[3, 3] { { 'e', 'e', 'e' }, { 'p', 'b', 'f' }, { 'e', 'b', 'f' } };
-            levels.Add(charMap);
-            charMap = new char[2, 2] { { 'p', 'w' }, { 'f', 'b' } };
-            levels.Add(charMap);
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var levelsDirectory = new DirectoryInfo(currentDirectory + "\\" + path);
+            var files = levelsDirectory.GetFiles();
+
+            foreach (var file in files)
+            {
+                levels.Add(GetLevel(file));
+            }
+            //var charMap = new char[3, 3] { { 'e', 'e', 'e' }, { 'p', 'b', 'f' }, { 'e', 'b', 'f' } };
+            //levels.Add(charMap);
+            //charMap = new char[2, 2] { { 'p', 'w' }, { 'f', 'b' } };
+            //levels.Add(charMap);
 
             return levels;
+        }
+
+        private char[,] GetLevel(FileInfo fileWithLevel)
+        {
+            StreamReader fileReadingStream = new StreamReader(fileWithLevel.OpenRead());
+            var magic = new List<string>();
+            while (!fileReadingStream.EndOfStream)
+            {
+                magic.Add(fileReadingStream.ReadLine());
+            }
+
+            int width = magic[0].Length/2+1;
+            int height = magic.Count;
+
+            var levelAsCharArray = new char[width, height];
+            for (int i=0; i<width; i++)
+                for (int j =0; j<height; j++)
+                {
+                    levelAsCharArray[i, j] = magic[i][j];
+                }
+
+            return levelAsCharArray;
+           
         }
 
 

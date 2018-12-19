@@ -35,7 +35,7 @@ namespace SokobanGame
                         Tiles[i, j].BoxOnATile = newBox;
                     }
 
-                    if (levelMap[i, j] == 'w' || levelMap[i, j] == ' ')
+                    if (levelMap[i, j] == 'w')
                     {
                         Tiles[i, j] = new Wall();
                         Tiles[i, j].Texture = Wall.DefaultTexture;
