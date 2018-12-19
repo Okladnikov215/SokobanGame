@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/Fedya/Documents/Visual Studio 2017/Projects/Game1/Game1/Content/MainFont.spritefont</SourceFile>
+  <SourceTime>2018-12-18T22:59:25.8571612+07:00</SourceTime>
+  <DestFile>C:/Users/Fedya/Documents/Visual Studio 2017/Projects/Game1/Game1/Content/bin/DesktopGL/Content/MainFont.xnb</DestFile>
+  <DestTime>2018-12-18T23:01:10.1477289+07:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2018-12-10T22:08:32+07:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2018-12-10T22:08:32+07:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
